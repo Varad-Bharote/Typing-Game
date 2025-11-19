@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Typing Speed Game</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Typing Speed Test</h1>
+        <div class="settings">
+            <div class="difficulty-selector">
+                <label for="difficulty">Mode:</label>
+                <select id="difficulty">
+                    <option value="all" selected>All Words</option>
+                </select>
+            </div>
+            <div class="time-selector">
+                <label for="time-limit">Time (seconds):</label>
+                <select id="time-limit">
+                    <option value="30">30</option>
+                    <option value="60" selected>60</option>
+                    <option value="120">120</option>
+                    <option value="300">300</option>
+                </select>
+            </div>
+        </div>
+        <div class="stats">
+            <div class="stat">
+                <span class="stat-label">Time:</span>
+                <span id="timer">60</span>s
+            </div>
+            <div class="stat">
+                <span class="stat-label">Score:</span>
+                <span id="score">0</span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">WPM:</span>
+                <span id="wpm">0</span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">High Score:</span>
+                <span id="high-score">0</span>
+            </div>
+        </div>
+        <div class="game-area">
+            <div id="word-display"></div>
+            <input type="text" id="typing-input" placeholder="Start typing here..." autocomplete="off" autofocus>
+        </div>
+        <div class="controls">
+            <button id="start-btn">Start Game</button>
+            <button id="reset-btn">Reset Game</button>
+        </div>
+        <div class="accuracy">
+            <div class="stat">
+                <span class="stat-label">Accuracy:</span>
+                <span id="accuracy">100</span>%
+            </div>
+        </div>
+        <div class="instructions">
+            <button id="help-btn">Show Instructions</button>
+            <div id="help-text" class="help-text hidden">
+                <h3>How to Play:</h3>
+                <ul>
+                    <li>Select time limit</li>
+                    <li>Click "Start Game" to begin</li>
+                    <li>Type the displayed word exactly as shown</li>
+                    <li>Press Enter or Space after each word (optional)</li>
+                    <li>Score points for each correct character</li>
+                    <li>Try to achieve the highest score possible!</li>
+                </ul>
+                <p><strong>Tip:</strong> The game now includes words from comprehensive dictionaries including Oxford, Cambridge, and more!</p>
+            </div>
+        </div>
+    </div>
+    <audio id="correct-sound" src="data:audio/mpeg;base64,SUQzBAAAAAABEVRYWFgAAAAtAAADY29tbWVudABCaWdTb3VuZEJhbmsuY29tIC8gTGFTb25vdGhlcXVlLm9yZwBURU5DAAAAHQAAA1N3aXRjaCBQbHVzIMKpIE5DSCBTb2Z0d2FyZQBUSVQyAAAABgAAAzIyMzUAVFNTRQAAAA8AAANMYXZmNTcuODMuMTAwAAAAAAAAAAAAAAD/80DEAAAAA0gAAAAATEFNRTMuMTAwVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/zQsRbAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/zQMSkAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV" preload="auto"></audio>
+    <audio id="incorrect-sound" src="data:audio/mpeg;base64,SUQzBAAAAAABEVRYWFgAAAAtAAADY29tbWVudABCaWdTb3VuZEJhbmsuY29tIC8gTGFTb25vdGhlcXVlLm9yZwBURU5DAAAAHQAAA1N3aXRjaCBQbHVzIMKpIE5DSCBTb2Z0d2FyZQBUSVQyAAAABgAAAzIyMzUAVFNTRQAAAA8AAANMYXZmNTcuODMuMTAwAAAAAAAAAAAAAAD/80DEAAAAA0gAAAAATEFNRTMuMTAwVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/zQsRbAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/zQMSkAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV" preload="auto"></audio>
+    <script src="script.js"></script>
+</body>
+</html>
